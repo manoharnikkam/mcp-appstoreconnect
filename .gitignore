@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+.uv/
+
+# Private key — NEVER commit
+*.p8
+*.pem
+
+# Env
+.env
+.env.*
+
+# Tools
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# macOS
+.DS_Store
