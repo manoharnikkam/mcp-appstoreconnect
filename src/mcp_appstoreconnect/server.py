@@ -3,7 +3,11 @@
 import os
 from typing import Any
 
+import uvicorn
 from mcp.server.fastmcp import FastMCP
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 
 from .auth import ASCAuth
 from .client import ASCClient
@@ -167,8 +171,27 @@ async def list_customer_reviews(
     return _pluck(data["data"], "title", "body", "rating", "createdDate", "reviewerNickname")
 
 
+class _BearerAuthMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: Any) -> Response:
+        token = os.environ.get("MCP_AUTH_TOKEN")
+        if token:
+            auth = request.headers.get("Authorization", "")
+            if auth != f"Bearer {token}":
+                return Response("Unauthorized", status_code=401)
+        return await call_next(request)
+
+
 def main() -> None:
-    mcp.run()
+    transport = os.environ.get("MCP_TRANSPORT", "stdio")
+
+    if transport == "http":
+        host = os.environ.get("MCP_HOST", "0.0.0.0")
+        port = int(os.environ.get("MCP_PORT", "8000"))
+        app = mcp.streamable_http_app()
+        app.add_middleware(_BearerAuthMiddleware)
+        uvicorn.run(app, host=host, port=port)
+    else:
+        mcp.run()
 
 
 if __name__ == "__main__":

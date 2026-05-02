@@ -1,0 +1,19 @@
+services:
+  mcp-appstoreconnect:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      MCP_TRANSPORT: http
+      MCP_AUTH_TOKEN: ${MCP_AUTH_TOKEN}
+      ASC_KEY_ID: ${ASC_KEY_ID}
+      ASC_ISSUER_ID: ${ASC_ISSUER_ID}
+      # Key is mounted as a file — never bake it into the image
+      ASC_KEY_PATH: /run/secrets/asc_key
+    secrets:
+      - asc_key
+    restart: unless-stopped
+
+secrets:
+  asc_key:
+    file: ${ASC_KEY_FILE:-~/.appstoreconnect/AuthKey.p8}
