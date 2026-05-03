@@ -61,8 +61,8 @@ async def list_apps(limit: int = 25) -> list[dict[str, Any]]:
 async def list_builds(app_id: str, limit: int = 25) -> list[dict[str, Any]]:
     """List recent builds for an app."""
     data = await _get_client().get(
-        f"/apps/{app_id}/builds",
-        {"limit": str(limit), "sort": "-uploadedDate"},
+        "/builds",
+        {"filter[app]": app_id, "limit": str(limit), "sort": "-uploadedDate"},
     )
     return _pluck(data["data"], "version", "uploadedDate", "processingState", "usesNonExemptEncryption")
 
