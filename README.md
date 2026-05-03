@@ -15,6 +15,7 @@ Two deployment modes — same codebase, same tools:
 |------|-------------|
 | `list_apps` | List all apps in your App Store Connect account |
 | `list_builds` | List recent builds for an app |
+| `get_builds_by_number` | Get builds for an app by build number/version |
 | `get_build` | Get details for a specific build |
 | `expire_build` | Expire a build so it can no longer be installed by testers |
 | `list_crash_signatures` | List grouped crash signatures for a build |
