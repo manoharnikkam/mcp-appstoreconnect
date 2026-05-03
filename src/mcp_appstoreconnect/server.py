@@ -68,6 +68,21 @@ async def list_builds(app_id: str, limit: int = 25) -> list[dict[str, Any]]:
 
 
 @mcp.tool()
+async def get_builds_by_number(app_id: str, build_number: str, limit: int = 200) -> list[dict[str, Any]]:
+    """Get builds for an app by build number/version."""
+    data = await _get_client().get(
+        "/builds",
+        {
+            "filter[app]": app_id,
+            "filter[version]": str(build_number),
+            "limit": str(limit),
+            "sort": "-uploadedDate",
+        },
+    )
+    return _pluck(data["data"], "version", "uploadedDate", "processingState", "usesNonExemptEncryption")
+
+
+@mcp.tool()
 async def get_build(build_id: str) -> dict[str, Any]:
     """Get details for a specific build."""
     data = await _get_client().get(f"/builds/{build_id}")
